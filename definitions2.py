@@ -1,16 +1,27 @@
 # %%
-import pandas as pd
+from pandas import DataFrame
 from itertools import product
-# from math import log2
-import time
-import numpy as np
-import json
+from math import log2
 import multiprocessing as mp
-df = pd.read_csv("CREA_procesado2.csv")
+#df = pd.read_csv("CREA_procesado2.csv")
 
 
 # %%
 def chk_l(l: str, expr: str):
+    """Returns a boolean if the expresion is an undesirable combination
+    
+    Parameters
+    ----------
+    l : str
+        The character of the combination
+    expr : str
+        The combination to be checked
+        
+    Returns
+    -------
+    bool
+        If the comb is a undesirable expression
+    """
 
     if l in "aeiou":
         dic = {
@@ -31,16 +42,26 @@ def chk_l(l: str, expr: str):
 
 
 # %%
-def get_combs(expr: str, char):
-    '''
-    Obtiene las posibles coincidencias de una letra en una palabra
-    '''
+def get_combs(expr: str, char : str):
+    """Returns the possible combinations of a letter in a word using the cartesian product
 
-    underls = expr.count(".")
+    Parameters
+    ----------
+    expr : str
+        A '.c...s' like expression in which the character char replace the dots
+    char : str
+    
+    Returns
+    -------
+    list
+        Of posible combinations that could match with words    
+    """
+
+    dots = expr.count(".")
 
     posible_chars = [char, "."]
 
-    combs = product(posible_chars, repeat=underls)
+    combs = product(posible_chars, repeat=dots)
 
 
     exps = []
@@ -67,6 +88,15 @@ def get_combs(expr: str, char):
 
 # %%
 def get_regex_v(char: str, comb: str):
+    """Returns a regular expresion that matchs with the character in the places that aren't dots,
+    but vowels match with their accentuated version in spanish (a, á)
+    
+    Parameters
+    ----------
+    char : str
+    comb : comb
+        A combination of an expresion
+    """
 
     dic = {
             "a": "á",
@@ -93,6 +123,14 @@ def get_regex_v(char: str, comb: str):
 
 # %%
 def get_regex_c(char: str, comb: str):
+    """Returns a regular expresion that matchs with the character in the places that aren't dots
+    
+    Parameters
+    ----------
+    char : str
+    comb : comb
+        A combination of an expresion
+    """
     
     r = ""
     for c in comb:
@@ -108,7 +146,8 @@ def get_regex_c(char: str, comb: str):
 # get_regex_c("l", "g.il.")
 
 # %%
-def get_regex(char: str, comb: str):
+def get_regex(char: str, comb: str) -> str:
+    """A combination of get_regex_c and get_regex_v"""
     
     if char in "aeiou" and char != "":
         return get_regex_v(char, comb)
@@ -116,11 +155,13 @@ def get_regex(char: str, comb: str):
     else:
         return get_regex_c(char, comb)
 
-get_regex("s", "g.st..a")
+#get_regex("s", "g.st..a")
 
 
 # %%
 def get_punt(args):
+
+        """"""
 
         char, expr, df = args
 
@@ -138,7 +179,7 @@ def get_punt(args):
         p = len(df2.index) / rows
 
         if p != 0:
-            punt += (p * np.log2(1/p))
+            punt += (p * log2(1/p))
 
 
         if char in "aeiou":
@@ -167,7 +208,7 @@ def get_punt(args):
             if p == 0:
                 continue
 
-            info_bits = np.log2(1/p)
+            info_bits = log2(1/p)
 
             punt += info_bits * p
 
@@ -176,7 +217,7 @@ def get_punt(args):
 
 
 # %%
-def get_puntuations(expr: str, letras: str, df: pd.DataFrame):
+def get_puntuations(expr: str, letras: str, df: DataFrame):
 
     df = df[[len(p) == len(expr) for p in df["palabra"]]]
 
@@ -189,13 +230,15 @@ def get_puntuations(expr: str, letras: str, df: pd.DataFrame):
 
     lst = list(zip(letras, punts))
 
-    dic2 = {tup[0]: tup[1] for tup in lst}
+    #dic2 = {tup[0]: tup[1] for tup in lst}
 
-    lst = sorted(list(dic2.items()), reverse=True, key = lambda l: l[1])
-    print(lst[:3])
+    lst = sorted(lst, reverse=True, key = lambda l: l[1])
+    for tup in lst[:3]:
+        print(tup)
 
 
-letras = [l for l in "abcdefghijklmnñopqrstuvwxyz"]
+
+
 
 
 
