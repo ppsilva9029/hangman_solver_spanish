@@ -29,4 +29,6 @@ Dsepués de esto se mostrarán las letras que más información dan usando el m�
 
 Si una palabra no tiene x letra, solo se vuelve a escribir la expresión "......." o "a....so" para eliminar las palabras que contengan esa letra.
 
-### En caso de 
+### En caso de obtener ZeroDivisionError
+
+Quiere decir que la palabra no se encuentra e el archivo CREA (Esto puede ser porque la palabra no existe o porque está mal escrita la expresión)
