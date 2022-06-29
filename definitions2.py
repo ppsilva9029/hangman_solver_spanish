@@ -123,7 +123,8 @@ def get_regex_v(char: str, comb: str):
 
 # %%
 def get_regex_c(char: str, comb: str):
-    """Returns a regular expresion that matchs with the character in the places that aren't dots
+    """Returns a regular expresion that matchs with the character in the places that aren't dots,
+    a.a..a matches with amanda but not with aaaaaa
     
     Parameters
     ----------
@@ -159,9 +160,26 @@ def get_regex(char: str, comb: str) -> str:
 
 
 # %%
-def get_punt(args):
+def get_punt(args) -> float:
 
-        """"""
+        """Obtains the punctuation of a given charcter, high scores means the letter brings more information
+        
+        Parameters
+        ----------
+        args : tuple
+            a tuple of (char, expr, DataFrame)
+            
+            char : str
+                the character to be tested in the DataFrame
+            expr : str
+                the current expression or information we have, something like 'a..s.t.'
+            df : DataFrame
+                The DataFrame in which we are going to test the character
+        
+        Returns
+        -------
+        float
+            the punctuation of given information by a letter"""
 
         char, expr, df = args
 
@@ -217,25 +235,29 @@ def get_punt(args):
 
 
 # %%
-def get_puntuations(expr: str, letras: str, df: DataFrame):
+def get_puntuations(expr: str, letras: list, df: DataFrame):
 
-    df = df[[len(p) == len(expr) for p in df["palabra"]]]
+
+    #df = df[[len(p) == len(expr) for p in df["palabra"]]]
 
     args_ = [(c, expr, df) for c in letras]
 
-    with mp.Pool(6) as p:
+    with mp.Pool(mp.cpu_count() - 1) as p: # Modify this with the desired prossesors
 
         punts = p.map(get_punt, args_)
-
 
     lst = list(zip(letras, punts))
 
     #dic2 = {tup[0]: tup[1] for tup in lst}
 
     lst = sorted(lst, reverse=True, key = lambda l: l[1])
-    for tup in lst[:3]:
+    for tup in lst[:4]:
         print(tup)
 
+def reduce_df(expr : str, df : DataFrame, c: str) -> DataFrame:
+    
+    df2 = df[df["palabra"].str.match(get_regex_c(c, expr)) == True]
+    return df2
 
 
 
