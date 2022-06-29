@@ -23,7 +23,7 @@ Se pide que se elija una letra y después la información obtenida de esa letra.
   \> a....ll.        
   \# Se escribe un punto en los lugares de los que no se tiene información  
   
-En caso de haberse equivocado, si escribe _reg_ en "Expresión > " le dejará volver a escribir la letra y la expresión. 
+En caso de haberse equivocado, si escribe \_reg_ en "Expresión > " le dejará volver a escribir la letra y la expresión. 
 
 Dsepués de esto se mostrarán las letras que más información dan usando el método de 3b1b mostrado al principio (u, r, e, b) y se mostrarán las palabras que coinciden con la expresión (argüello, arguello, arquillo, azotillo) y se vuelve a repetir.
 
